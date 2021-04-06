@@ -1,9 +1,8 @@
-<form method="post">
-	<p>
-		<input name="login" type="text" placeholder="Введите логин">
-	</p>
-	<p>
-		<input name="password" type="password" placeholder="Введите пароль">
-	</p>
-	<input type="submit">
+<form <?=$form->method()?> class="form sign-up">
+	<?=$form->inputSign()?>
+	<?php foreach($form->fields() as $field):?>
+		<div class="form-item">
+			<?=$field?>
+		</div>
+	<?php endforeach;?>
 </form>

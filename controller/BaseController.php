@@ -11,7 +11,7 @@ class BaseController
     public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->title = 'Php2';
+        $this->title = 'php2.blog';
 		$this->content = '';
     }
 
