@@ -38,7 +38,7 @@ class UserModel extends BaseModel
 		$this->validator->execute($fields);
 
 		if (!$this->validator->success) {
-			// throw new exception
+			throw new ValidationException('User is not registered', 403, $this->validator->errors);
 		}
 
 		return $this->add([

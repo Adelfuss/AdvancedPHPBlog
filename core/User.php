@@ -11,7 +11,7 @@ class User
 	private $mUser;
 	private $mSession;
 
-	public function __construct(UserModel $mUser, SessionModel $mSession = null)
+	public function __construct(UserModel $mUser, SessionModel $mSession)
 	{
 		$this->mUser = $mUser;
 		$this->mSession = $mSession;
@@ -19,9 +19,9 @@ class User
 
 	public function signUp(array $fields)
 	{
-		// if (!$this->comparePass($fields)) {
-		// 	return false;
-		// }
+		if (!$this->comparePass($fields)) {
+			return false;
+		}
 
 		$this->mUser->signUp($fields);
 	}
@@ -39,7 +39,7 @@ class User
 			// throw new UnathorizedException('User with login %s is not found');
 		}
 
-		if (isset($fields['remember'])) {
+		if (isset($fieldsp['remember'])) {
 			// ставим куку
 		}
 
@@ -58,6 +58,6 @@ class User
 
 	private function comparePass($fields)
 	{
-		// сравниваем пароли
+		return $fields['password'] === $fields['password-reply'];
 	}
 }

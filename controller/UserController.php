@@ -3,13 +3,14 @@
 namespace Controller;
 
 use Core\User;
-use models\UserModel;
-use models\SessionModel;
+use Models\UserModel;
+use Models\SessionModel;
 use Core\DBConnector;
 use Core\DBDriver;
-use Core\Validator;
+use Core\Validator\Validator;
 use Forms\SignUp;
 use Core\Forms\FormBuilder;
+use Core\Exceptions\ValidationException;
 
 class UserController extends BaseController
 {
@@ -56,20 +57,24 @@ class UserController extends BaseController
                 new Validator()
             );
 
-            $user = new User($mUser);
+            $mSession = new SessionModel(
+                new DBDriver(DBConnector::getConnect()),
+                new Validator()
+            );
+
+            $user = new User($mUser, $mSession);
 
             try {
-                $user->signUp($this->request->post());
+                $user->signUp($form->handleRequest($this->request));
                 $this->redirect('/');
-            } catch (\Exception $e) {
-                $errors = $e->getErrors();
+            } catch (ValidationException $e) {
+                $form->addErrors($e->getErrors());
             }
         }
 
         $this->content = $this->build(
             __DIR__ . '/../views/sign-up.html.php',
             [
-                'errors' => $errors,
                 'form' => $formBuilder
             ]
         );

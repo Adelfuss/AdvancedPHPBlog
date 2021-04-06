@@ -1,12 +1,12 @@
 <?php
 
-namespace core\Forms;
+namespace Core\Forms;
 
 class FormBuilder
 {
     public $form;
 
-    public function __construct(Form $form)
+    public function __construct(Form &$form)
     {
         $this->form = $form;
     }
@@ -33,21 +33,20 @@ class FormBuilder
         return $inputs;
     }
 
-    public function sign()
-    {
-        $string = '';
-        foreach ($this->form->getFields() as $field) {
-            if (isset($field->name)) {
-                $string = '/#@=@/' . $field->name;
-            }
-        }
-
-        return md5($string);
-    }
-
     public function input(array $attributes)
     {
-        return sprintf('<input %s>', $this->buildAttributes($attributes));
+        $errors = '';
+
+        if (isset($attributes['errors'])) {
+            $class = $attributes['class'] ?? '';
+            $attributes['class'] = trim(sprintf('%s error', $class));
+            $errors = $attributes['errors'];
+
+            unset($attributes['errors']);
+            $errors = '<div>' . implode('</div><div>', $errors) . '</div>';
+        }
+
+        return sprintf('<input %s>%s', $this->buildAttributes($attributes), $errors);
     }
 
     public function inputSign()
@@ -55,7 +54,7 @@ class FormBuilder
         return $this->input([
             'type' => 'hidden',
             'name' => 'sign',
-            'value' => $this->sign()
+            'value' => $this->form->getSign()
         ]);
     }
 
